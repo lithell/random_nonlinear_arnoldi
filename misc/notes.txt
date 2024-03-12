@@ -1,0 +1,7 @@
+o Ang. expansionen av de projicerade matriserna: i NLA blir det minnesinneffektivt att spara A_j v_k explicit, om storleken på problemet är för stor. Kräver ju O(k*n) att spara i iteration k. En möjlig fördel med sNLA är att denna strategi blir rimlig. Om s << n så är minneskravet O(s*k) tillräckligt litet för att matris-vektor produkterna skall kunna sparas explicit. Detta borde göra expansionen av matriserna involverade mycket snabbare, iom att vi inte måste göra massa ''onödiga'' matvecs. Med denna strategi slipper vi även att sketcha en stor matris varje iteration.
+
+o Metoden möjliggör en ''two-pass-approach'', iom att egenvektorerna kan returneras i faktoriserad form mu = Vk*y. I en förtsa runda så kan vi då bygga y, och i en andra runda bygga Vk. Kräver mycket mindre minne ''per gång'' än den direkta metoden.
+
+o Vi får olika resultat beroende på om vi sparar problem-matvecs eller om vi explicit sketchar problem matvecs explicit i varje iteratio. Borde inte skillnade vara att vid den explicita metoden så kontrolleras konditionstalet i varje iteration, medans om vi sparar tidigare matvecs så... blir det på något annta vis.
+
+o n=1000, mi=80, 2.5
