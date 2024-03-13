@@ -9,16 +9,17 @@ function gen_sparse_mat(Σ)
     wanted_evps=Σ[II];
 
     T=spdiagm(0 => log.(wanted_evps),
-              -1 => 0.03*randn(n-1), 1 => 0.3*randn(n-1),
-              -5 => 0.001*randn(n-5));
+              -1 => 0.003*randn(n-1), 1 => 0.003*randn(n-1),
+              -5 => 0.005*randn(n-5));
 
     A=exp(Matrix(T))
 
-    A[findall(x -> abs(x) < 1e-9, A)] .= 0;
+    A[findall(x -> abs(x) < 1e-10, A)] .= 0;
 
     A=sparse(A)
 
     A=A+sprandn(n,n,0.01)*0.01 # Not just a band-matrix
+
 
     numnz = nnz(A);
     numels = n^2;

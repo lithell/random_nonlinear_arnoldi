@@ -16,7 +16,7 @@ function gen_perturbed_example(
     ) 
 
     # linear problem with "known" eigs
-    z = [randn(n-1).*exp.(2im*pi*rand(n-1)); extreme_radius]
+    z = [ 5 .+ rand(n-1).*exp.(2im*pi*rand(n-1)); 5 + extreme_radius]
 
     Σ = σ .+ 1 ./z;
 
@@ -31,7 +31,7 @@ function gen_perturbed_example(
     # low rank
     c = randn(n,1)/1e2;
     d = randn(n,1)/1e2;
-    f3 = λ -> 1 ./ (5 .- λ); # fix this hardcode. Probably should be carefull with this...
+    f3 = λ -> 1 ./ (5 .- λ); # fix this hardcode. Probably should be careful with this...
 
     nep2 = LowRankFactorizedNEP([c],[d],[f3]);
 
@@ -50,19 +50,20 @@ function gen_perturbed_example(
         v_ref = vv;
     else 
 
-        # compute one eigs and hope it's the one we want... probably think of a better way than this
+        # compute one eig and hope it's the one we want... probably think of a better way than this
         λ, v_ref = try 
-            iar(nep; neigs=1, tol=5e-12, maxit=120, σ=σ) 
+            iar(nep; neigs=5, tol=5e-5, maxit=120, σ=σ) 
         catch err
             err.λ, err.v;
         end
 
+        display(λ)
 
         λ_ref = λ[findmax(abs.( 1 ./(λ .- σ)))[2]];
         v_ref = v_ref[:,1]
 
         # run a few Newton iters to be sure we found the eig to good precision
-        λ_ref, v_ref = augnewton(nep, maxit=10, λ=λ_ref, v=v_ref);
+        λ_ref, v_ref = augnewton(nep, maxit=20, λ=λ_ref, v=v_ref, tol=1e-15);
 
     end
 
