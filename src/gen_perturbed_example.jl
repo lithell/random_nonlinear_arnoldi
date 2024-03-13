@@ -49,15 +49,25 @@ function gen_perturbed_example(
         λ_ref = ll[kk];
         v_ref = vv;
     else 
-        # compute one eigs and hope it's the one we want... probably think of a better way than this
-        eigs, v_ref = iar(nep; neigs=1, tol=5e-10, maxit=120, σ=σ); 
 
-        λ_ref = eigs[findmax(abs.( 1 ./(eigs .- σ)))[2]];
+        # compute one eigs and hope it's the one we want... probably think of a better way than this
+        λ, v_ref = try 
+            iar(nep; neigs=1, tol=5e-12, maxit=120, σ=σ) 
+        catch err
+            err.λ, err.v;
+        end
+
+
+        λ_ref = λ[findmax(abs.( 1 ./(λ .- σ)))[2]];
+        v_ref = v_ref[:,1]
+
+        # run a few Newton iters to be sure we found the eig to good precision
+        λ_ref, v_ref = augnewton(nep, maxit=10, λ=λ_ref, v=v_ref);
 
     end
 
-    @info "Constructed problem with reference eigen-pair:" λ_ref v_ref
+    @info "Constructed problem with reference eigenvalue:" λ_ref
 
-    return nep, λ_ref;
+    return nep, λ_ref, v_ref;
 end
 

@@ -18,12 +18,12 @@ include("../src/sketch_reduced_matrices.jl")
 
 Random.seed!(321);
 
-n = 2000;
+n = 500;
 σ = 3;
-extreme_radius = 5;
+extreme_radius = 10;
 linear=false;
 
-nep, ref_eig = gen_perturbed_example(
+nep, λ_ref, v_ref = gen_perturbed_example(
     n,
     σ,
     extreme_radius,
@@ -33,7 +33,7 @@ nep, ref_eig = gen_perturbed_example(
 # set params
 max_iter = 30;
 neigs = 1;
-tol = 1e-10;
+tol = 1e-16;
 s = 4*max_iter;
 trunc_len = 6;
 save_reduced_matrices=true;
@@ -46,7 +46,7 @@ vstart=deepcopy(z); # vstart is modified in the functions
 
 λ = σ;
 
-λ_ref = ref_eig;
+#λ_ref = ref_eig;
 
 inner_solver_method = NEPSolver.IARInnerSolver();
 errmeasure = EigvalReferenceErrmeasure(nep, λ_ref);

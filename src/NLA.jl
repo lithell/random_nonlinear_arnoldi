@@ -76,7 +76,7 @@ function NLA(
         # solve projected problem 
         tic_inner = Int(time_ns());
 
-        dd, vv = inner_solve(inner_solver_method,T,pnep,neigs=neigs,σ=σ);
+        dd, vv = inner_solve(inner_solver_method,T,pnep,neigs=neigs,σ=σ,tol=1e-16);
 
         toc_inner = Int(time_ns());
         time_inner = 1e-9*(toc_inner-tic_inner);
