@@ -50,20 +50,18 @@ function gen_perturbed_example(
         v_ref = vv;
     else 
 
-        # compute one eig and hope it's the one we want... probably think of a better way than this
+        # compute some eigs and hope it includes the one we want... probably think of a better way than this, but should work for our contrived examples
         λ, v_ref = try 
             iar(nep; neigs=5, tol=5e-5, maxit=120, σ=σ) 
         catch err
             err.λ, err.v;
         end
 
-        display(λ)
-
         λ_ref = λ[findmax(abs.( 1 ./(λ .- σ)))[2]];
         v_ref = v_ref[:,1]
 
         # run a few Newton iters to be sure we found the eig to good precision
-        λ_ref, v_ref = augnewton(nep, maxit=20, λ=λ_ref, v=v_ref, tol=1e-15);
+        λ_ref, v_ref = augnewton(nep, maxit=30, λ=λ_ref, v=v_ref, tol=1e-16);
 
     end
 
