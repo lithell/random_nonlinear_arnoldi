@@ -47,7 +47,7 @@ function gen_perturbed_example(
         ll, vv = eigen(Matrix(A));
         kk = findmax(abs.( 1 ./(ll .- σ)))[2]; # this might not be robust...
         λ_ref = ll[kk];
-        v_ref = vv;
+        v_ref = vv[:,kk];
     else 
 
         # compute some eigs and hope it includes the one we want... probably think of a better way than this, but should work for our contrived examples
@@ -65,7 +65,21 @@ function gen_perturbed_example(
 
     end
 
-    @info "Constructed problem with reference eigenvalue:" λ_ref
+    # compute eigenvalue condition number 
+    if linear 
+        λ_ref_left, w_ref = eigen(Matrix(A)');
+        j = argmin(abs.(λ_ref_left .- λ_ref));
+        w_ref = w_ref[:,j];
+        eig_cond = 1/abs.(w_ref'*v_ref);
+    else 
+        M = compute_Mder(nep, λ_ref, 0);
+        λ_ref_left, w_ref = eigen(Matrix(M)');
+        j = argmin(abs.(λ_ref_left .- λ_ref));
+        w_ref = w_ref[:,j];
+        eig_cond = 1/abs(w_ref'*compute_Mder(nep, λ_ref, 1)*v_ref);
+    end
+
+    @info "Constructed problem with reference eigenvalue & eigenvalue condition number:" λ_ref eig_cond
 
     return nep, λ_ref, v_ref;
 end
