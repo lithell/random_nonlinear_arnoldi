@@ -4,9 +4,9 @@ include("../src/gen_sparse_mat.jl")
 
 Generate NEP that is a perturbed linear eigenproblem with a low rank non-linear term. 'nep' is of size 'n'. 'σ' is chosen to be close to the inital shift in the solver method (shift-and-invert-type solver). 'extreme_radius' is distance from center of eig-disc to outlier.   
 
-The function accepts the additional parameter 'linear', which when set to true will return the linear problem, i.e. without the perturbation. It can also optionally return the variable 'λ_ref' which is (hopefully) the true (outlier) eig of the problem. This might not be robust so proceed with caution.
+The function accepts the additional parameter 'linear', which when set to true will return the linear problem, i.e. without the perturbation. It can also optionally return the variable 'λ_ref' which is (hopefully) the true (outlier) eig of the problem. This might not be robust so proceed with caution. Finally it optionally returns the condition number of the reference eigenvalue.
 
-Notice that this function generates an intermediate full matrix, and so might not be suitable for generating very large problems.
+Notice that this function generates an intermediate full matrix (in several places!), and so might not be suitable for generating very large problems.
 """
 function gen_perturbed_example(
     n::Int,
@@ -45,7 +45,7 @@ function gen_perturbed_example(
     # compute reference eigenvalue
     if linear
         ll, vv = eigen(Matrix(A));
-        kk = findmax(abs.( 1 ./(ll .- σ)))[2]; # this might not be robust...
+        kk = findmax(abs.( 1 ./(ll .- σ)))[2]; # this is not robust...
         λ_ref = ll[kk];
         v_ref = vv[:,kk];
     else 
@@ -81,6 +81,6 @@ function gen_perturbed_example(
 
     @info "Constructed problem with reference eigenvalue & eigenvalue condition number:" λ_ref eig_cond
 
-    return nep, λ_ref, v_ref;
+    return nep, λ_ref, v_ref, eig_cond;
 end
 

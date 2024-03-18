@@ -21,9 +21,9 @@ Random.seed!(123);
 n = 500;
 σ = 3;
 extreme_radius = 5;
-linear=false;
+linear=true;
 
-nep, λ_ref, v_ref = gen_perturbed_example(
+nep, λ_ref, v_ref, eig_cond = gen_perturbed_example(
     n,
     σ,
     extreme_radius,
@@ -33,7 +33,7 @@ nep, λ_ref, v_ref = gen_perturbed_example(
 # set params
 max_iter = 30;
 neigs = 1;
-tol = 1e-16;
+tol = 1e-18;
 s = 2*max_iter;
 trunc_len = 6;
 save_reduced_matrices=true;
@@ -72,6 +72,9 @@ p1 = plot(
     err_hist_NLA,
     yaxis=:log,
     lc=:black,
+    markershape=:utriangle,
+    markercolor=:black,
+    markersize=4,
     lw=:1.2,
     label="NLA"
     )
@@ -106,7 +109,9 @@ p1 = plot!(
     err_hist_sNLA,
     yaxis=:log,
     lc=:black,
-    ls=:dash,
+    markershape=:circle,
+    markercolor=:black,
+    markersize=4,
     lw=:1.2,
     label="sNLA"
     )
@@ -119,10 +124,24 @@ p1 = plot!(
     yaxis=:log,
     lc=:black,
     ls=:dot,
-    lw=:2,
+    lw=:1.2,
     label="tol"
     )
 
+
+# plot eigval cond number times eps_mach
+p1 = plot!(
+    1:most_iters, 
+    eps()*eig_cond*ones(most_iters),
+    yaxis=:log,
+    lc=:black,
+    ls=:dashdotdot,
+    lw=:1.2,
+    label="κ(λ_ref)⋅ε_mach"
+    )
+
+
+# more plot styling
 p1 = plot!(
     framestyle=:box,
     size=(900,500),
@@ -130,20 +149,25 @@ p1 = plot!(
     ylimits=(10.0^-18, 10.0^2),
     yticks=10.0 .^(-18:2:2),
     left_margin = 10mm,
-    right_margin = 10mm
+    right_margin = 10mm,
+    grid=false
     )
 
 ylabel!("Absolute Error in Eigenvalue")
 xlabel!("Iterations")
-title!("Convergence of NLA & sNLA (n=$n, s=$s, trunc_len=$trunc_len)")
+#title!("Convergence of NLA & sNLA (n=$n, s=$s, trunc_len=$trunc_len)")
 
 # plot sparsity of linear factor
+B = copy(abs.(get_Av(nep)[1]));
+B[findall(x -> abs(x) > 0, B)] .= 1; # ugly but just want for plot
+
 p2 = spy(
-    abs.(get_Av(nep)[1]),
+    B,
     aspect_ratio=:equal,
-    legend=:none,
+    legend=nothing,
     framestyle=:box,
-    size=(500,500)
+    size=(500,500),
+    markersize = 0.9
     )
 
 title!("Sparsity Pattern of Linear Factor")
