@@ -12,7 +12,7 @@ include("../src/NLA.jl")
 #nep=nep_gallery("dep0_tridiag");
 nep=nep_gallery("qdep0");
 
-max_iter = 200;
+max_iter = 40;
 neigs = 20;
 tol = 1e-7;
 
@@ -30,5 +30,5 @@ xlabel!("Iters")
 p2 = plot(1:max_iter-1, cumsum(timings[1:end-1,:], dims=1), lw=:1.5, label=["Total" "Expand projmats" "Inner solve" "Lin solve" "Orth"])
 p2 = plot!(legend=:topleft)
 
-savefig(p1, "../figs/NLA_qdep0.pdf")
-savefig(p2, "../figs/NLA_timings.pdf")
+#savefig(p1, "../figs/NLA_qdep0.pdf")
+#savefig(p2, "../figs/NLA_timings.pdf")

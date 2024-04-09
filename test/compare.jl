@@ -18,7 +18,7 @@ include("../src/sketch_reduced_matrices.jl")
 
 Random.seed!(123);
 
-n = 500;
+n = 1500;
 σ = 3;
 extreme_radius = 5;
 linear=true;
@@ -35,7 +35,7 @@ max_iter = 30;
 neigs = 1;
 tol = 1e-18;
 s = 2*max_iter;
-trunc_len = 6;
+trunc_len = 4;
 save_reduced_matrices=true;
 
 sketch = setup_sketching_handle(n, s);
@@ -47,6 +47,7 @@ vstart=deepcopy(z); # vstart is modified in the functions
 λ = σ;
 
 inner_solver_method = NEPSolver.IARInnerSolver();
+#inner_solver_method = NEPSolver.NewtonInnerSolver();
 errmeasure = EigvalReferenceErrmeasure(nep, λ_ref);
 
 # solve problem by NLA
@@ -73,10 +74,10 @@ p1 = plot(
     yaxis=:log,
     lc=:black,
     markershape=:utriangle,
-    markercolor=:black,
+    markercolor=:white,
     markersize=4,
     lw=:1.2,
-    label="NLA"
+    label="NLAR"
     )
 
 
@@ -110,10 +111,10 @@ p1 = plot!(
     yaxis=:log,
     lc=:black,
     markershape=:circle,
-    markercolor=:black,
+    markercolor=:white,
     markersize=4,
     lw=:1.2,
-    label="sNLA"
+    label="sNLAR"
     )
 
 # plot tol
