@@ -171,6 +171,5 @@ p2 = spy(
     markersize = 0.9
     )
 
-title!("Sparsity Pattern of Linear Factor")
 
 display(p1)
