@@ -44,7 +44,7 @@ function NLA(
     X = zeros(T, n, neigs); # store conv eigvecs
     timings = zeros(max_iter, 5); # store timings of different parts
     err_hist=eps()*ones(max_iter,neigs); # err history 
-    σ = λ; # intital pole (not sure where this is updated, but seems to work?)
+    σ = λ; # intital pole
     k = 1; # iters
     m = 0; # num conv eigs
     u::Vector{T} = v;

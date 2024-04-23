@@ -173,11 +173,11 @@ function sNLA(
         tic_ort = Int(time_ns());
         if k > trunc_len
             for i = 1:2
-                Δv = Δv - view(V,:, (k-trunc_len+2):k)*view(V,:, (k-trunc_len+2):k)'*Δv;
+                Δv = Δv - view(V,:, (k-trunc_len+2):k)*(view(V,:, (k-trunc_len+2):k)'*Δv);
             end
         else
             for i=1:2
-                Δv = Δv - Vk*Vk'*Δv
+                Δv = Δv - Vk*(Vk'*Δv);
             end
         end
         toc_ort = Int(time_ns());
