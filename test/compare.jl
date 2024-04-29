@@ -7,6 +7,7 @@ using IterativeSolvers
 using Plots
 using Printf
 using Measures
+using LaTeXStrings
 
 include("../src/NLA.jl")
 include("../src/sNLA.jl")
@@ -16,12 +17,12 @@ include("../src/sketch_and_expand_projectmatrices.jl")
 include("../src/gen_perturbed_example.jl")
 include("../src/sketch_reduced_matrices.jl")
 
-Random.seed!(123);
+Random.seed!(0);
 
-n = 1500;
+n = 500;
 σ = 3;
-extreme_radius = 5;
-linear=true;
+extreme_radius = 8;
+linear=false;
 
 nep, λ_ref, v_ref, eig_cond = gen_perturbed_example(
     n,
@@ -31,7 +32,7 @@ nep, λ_ref, v_ref, eig_cond = gen_perturbed_example(
     );
 
 # set params
-max_iter = 30;
+max_iter = 50;
 neigs = 1;
 tol = 1e-18;
 s = 2*max_iter;
@@ -119,15 +120,15 @@ p1 = plot!(
 
 # plot tol
 most_iters = max(length(err_hist_NLA), length(err_hist_sNLA));
-p1 = plot!(
-    1:most_iters, 
-    tol*ones(most_iters),
-    yaxis=:log,
-    lc=:black,
-    ls=:dot,
-    lw=:1.2,
-    label="tol"
-    )
+#p1 = plot!(
+#    1:most_iters, 
+#    tol*ones(most_iters),
+#    yaxis=:log,
+#    lc=:black,
+#    ls=:dot,
+#    lw=:1.2,
+#    label="tol"
+#    )
 
 
 # plot eigval cond number times eps_mach
@@ -147,15 +148,15 @@ p1 = plot!(
     framestyle=:box,
     size=(900,500),
     minorticks=true,
-    ylimits=(10.0^-18, 10.0^2),
-    yticks=10.0 .^(-18:2:2),
+    ylimits=(10.0^-12, 10.0^0),
+    yticks=10.0 .^(-12:2:0),
     left_margin = 10mm,
     right_margin = 10mm,
     grid=false
     )
 
-ylabel!("Absolute Error in Eigenvalue")
-xlabel!("Iterations")
+ylabel!(L"|\lambda_{ref} - \widehat{\lambda}\:|")
+xlabel!(L"\mathrm{Iterations}")
 #title!("Convergence of NLA & sNLA (n=$n, s=$s, trunc_len=$trunc_len)")
 
 # plot sparsity of linear factor

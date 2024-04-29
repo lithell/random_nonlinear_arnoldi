@@ -7,6 +7,7 @@ using IterativeSolvers
 using Plots
 using Printf
 using Measures
+using LaTeXStrings
 
 include("../src/NLA.jl")
 include("../src/sNLA.jl")
@@ -93,6 +94,35 @@ p1 = scatter!(
     yticks=(0:50:150),
     label="sNLAR"
     )
+
+# Liao et. al.
+c=3e8;
+
+Qstar1=[34643.66;0.36;0.48;2136.73;12376.84;1149.21;7714.93;118.71;3.17;3.59];
+fj1=[7.1373;4.5655;7.2465;9.9992;10.0449;10.4762;10.5463;11.1581;14.2617;15.0143];
+resqrt1=2*pi*fj1*1e9/c;
+
+imsqrt1=0.5*resqrt1./Qstar1;
+
+Qstar2=[34643.66;2136.73;12376.84;1149.21;7714.93;118.71;15.25;536.76;2500.75;181.23]
+fj2=[7.1373;9.9992;10.0449;10.4762;10.5463;11.1518;13.1180;13.2698;13.5882;13.7688];
+resqrt2=2*pi*fj2*1e9/c;
+imsqrt2=0.5*resqrt2./Qstar2;
+
+liaoevps=[resqrt1;resqrt2]+1im*[imsqrt1;imsqrt2];
+
+p1 = scatter!(
+    liaoevps, 
+    lc=:black,
+    markershape=:cross,
+    markercolor=:black,
+    markersize=4,
+    ylimits=[-5, 150],
+    xlimits=[80, 340],
+    xticks=(80:20:340),
+    yticks=(0:50:150),
+    label="Liao et al."
+    ) 
 
 p1 = plot!(legend=:topleft)
 ylabel!(L"\mathrm{Im}\:\:\sqrt{λ}")
