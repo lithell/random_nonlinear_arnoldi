@@ -1,4 +1,5 @@
 include("../src/gen_sparse_mat.jl")
+
 """
     nep = gen_perturbed_example(n::Int, σ::Number, extreme_radius::Number, kwargs)
 
@@ -79,7 +80,9 @@ function gen_perturbed_example(
         eig_cond = 1/abs(w_ref'*compute_Mder(nep, λ_ref, 1)*v_ref);
     end
 
-    @info "Constructed problem with reference eigenvalue & eigenvalue condition number:" λ_ref eig_cond
+    rel_res = norm(compute_Mlincomb(nep, λ_ref, v_ref));
+
+    @info "Constructed problem with reference eigenvalue & eigenvalue condition number:" λ_ref eig_cond rel_res
 
     return nep, λ_ref, v_ref, eig_cond;
 end

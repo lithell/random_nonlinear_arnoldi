@@ -21,8 +21,8 @@ include("../src/custom_shift_and_scale.jl")
 Random.seed!(123);
 
 # params
-max_iter = 30;
-s = 6*max_iter;
+max_iter = 40;
+s = 4*max_iter;
 neigs = 20;
 tol=1e-8;
 shift = 250^2;
@@ -50,9 +50,11 @@ vstart=deepcopy(z); # vstart is modified in the functions
     neigs=neigs,
     tol=tol,
     λ=λ,
+    v=vstart,
     inner_solver_method=IARInnerSolver()
     );
 
+vstart=deepcopy(z);
 # solve problem by sNLAR
 λ_snlar, v_snlar, err_hist_snlar = sNLA(
     nep1, 
@@ -63,6 +65,7 @@ vstart=deepcopy(z); # vstart is modified in the functions
     neigs=neigs, 
     tol=tol,
     λ=λ,
+    v=vstart,
     inner_solver_method=IARInnerSolver()
     );
 
@@ -124,6 +127,59 @@ p1 = scatter!(
     label="Liao et al."
     ) 
 
-p1 = plot!(legend=:topleft)
+p1 = plot!(legend=:topleft, framestyle=:box)
 ylabel!(L"\mathrm{Im}\:\:\sqrt{λ}")
 xlabel!(L"\mathrm{Re}\:\:\sqrt{λ}")
+
+
+# plot convergence
+err_hist_nlar[err_hist_nlar.==eps()] .= NaN;
+err_hist_nlar = err_hist_nlar[:];
+deleteat!(err_hist_nlar, findall(isnan, err_hist_nlar));
+
+p2 = plot(
+    1:length(err_hist_nlar), 
+    err_hist_nlar,
+    yaxis=:log,
+    lc=:black,
+    ls=:dash,
+    #markershape=:utriangle,
+    #markercolor=:white,
+    markersize=4,
+    lw=:1.2,
+    label="NLAR"
+    )
+
+
+err_hist_snlar[err_hist_snlar.==eps()] .= NaN;
+err_hist_snlar = err_hist_snlar[:];
+deleteat!(err_hist_snlar, findall(isnan, err_hist_snlar));
+
+p2 = plot!(
+    1:length(err_hist_snlar), 
+    err_hist_snlar,
+    yaxis=:log,
+    lc=:black,
+    #markershape=:circle,
+    #markercolor=:white,
+    markersize=4,
+    lw=:1.2,
+    label="sNLAR"
+    )
+
+# plot styling
+p2 = plot!(
+    framestyle=:box,
+    size=(900,500),
+    minorticks=true,
+    ylimits=(0.5*10.0^-10, 10.0^0),
+    yticks=10.0 .^(-10:2:0),
+    xlimits=(0, max_iter),
+    xticks=0:5:max_iter,
+    left_margin = 10mm,
+    right_margin = 10mm,
+    grid=true
+    )
+
+ylabel!(L"\mathrm{Residual\:\: norm}")
+xlabel!(L"\mathrm{Iterations}")
