@@ -17,11 +17,11 @@ include("../src/sketch_and_expand_projectmatrices.jl")
 include("../src/gen_perturbed_example.jl")
 include("../src/sketch_reduced_matrices.jl")
 
-Random.seed!(0);
+Random.seed!(123);
 
-n = 500;
-σ = 3;
-extreme_radius = 8;
+n = 1500;
+σ = 5;
+extreme_radius = 5;
 linear=false;
 
 nep, λ_ref, v_ref, eig_cond = gen_perturbed_example(
@@ -36,7 +36,7 @@ max_iter = 50;
 neigs = 1;
 tol = 1e-18;
 s = 2*max_iter;
-trunc_len = 4;
+trunc_len = 2;
 save_reduced_matrices=true;
 
 sketch = setup_sketching_handle(n, s);
@@ -45,7 +45,7 @@ z = randn(ComplexF64, n);
 normalize!(z)
 vstart=deepcopy(z); # vstart is modified in the functions
 
-λ = σ;
+λ = deepcopy(σ);
 
 inner_solver_method = NEPSolver.IARInnerSolver();
 #inner_solver_method = NEPSolver.NewtonInnerSolver();
@@ -74,7 +74,8 @@ p1 = plot(
     err_hist_NLA,
     yaxis=:log,
     lc=:black,
-    markershape=:utriangle,
+    ls=:dash,
+    #markershape=:utriangle,
     markercolor=:white,
     markersize=4,
     lw=:1.2,
@@ -84,6 +85,7 @@ p1 = plot(
 
 # solve problem by sNLA
 vstart=deepcopy(z);
+λ=deepcopy(σ);
 
 λ_sNLA, v_sNLA, err_hist_sNLA = sNLA(
     nep,
@@ -111,7 +113,7 @@ p1 = plot!(
     err_hist_sNLA,
     yaxis=:log,
     lc=:black,
-    markershape=:circle,
+    #markershape=:circle,
     markercolor=:white,
     markersize=4,
     lw=:1.2,
@@ -146,13 +148,13 @@ p1 = plot!(
 # more plot styling
 p1 = plot!(
     framestyle=:box,
-    size=(900,500),
+    #size=(900,500),
     minorticks=true,
     ylimits=(10.0^-12, 10.0^0),
     yticks=10.0 .^(-12:2:0),
-    left_margin = 10mm,
-    right_margin = 10mm,
-    grid=false
+    #left_margin = 10mm,
+    #right_margin = 10mm,
+    grid=true
     )
 
 ylabel!(L"|\lambda_{ref} - \widehat{\lambda}\:|")

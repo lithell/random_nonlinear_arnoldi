@@ -170,14 +170,14 @@ p2 = plot!(
 # plot styling
 p2 = plot!(
     framestyle=:box,
-    size=(900,500),
+    #size=(900,500),
     minorticks=true,
     ylimits=(0.5*10.0^-10, 10.0^0),
     yticks=10.0 .^(-10:2:0),
     xlimits=(0, max_iter),
     xticks=0:5:max_iter,
-    left_margin = 10mm,
-    right_margin = 10mm,
+    #left_margin = 10mm,
+    #right_margin = 10mm,
     grid=true
     )
 

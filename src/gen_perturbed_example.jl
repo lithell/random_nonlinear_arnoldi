@@ -32,7 +32,7 @@ function gen_perturbed_example(
     # low rank
     c = randn(n,1)/1e2;
     d = randn(n,1)/1e2;
-    f3 = λ -> 1 ./ (5 .- λ); # fix this hardcode. Probably should be careful with this...
+    f3 = λ -> 1 ./ (50 .- λ); # fix this hardcode. Probably should be careful with this...
 
     nep2 = LowRankFactorizedNEP([c],[d],[f3]);
 
